@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Navigation System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        select, button {
+            margin: 10px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>College Navigation System</h2>
+    <label>Current Location:</label>
+    <select id="current-location">
+        <option value="entrance">Entrance & Exit</option>
+        <option value="classroom">Classroom</option>
+        <option value="canteen">Canteen</option>
+        <option value="playground">Playground</option>
+        <option value="office">Office</option>
+    </select>
+    <label>Destination:</label>
+    <select id="destination">
+        <option value="entrance">Entrance & Exit</option>
+        <option value="classroom">Classroom</option>
+        <option value="canteen">Canteen</option>
+        <option value="playground">Playground</option>
+        <option value="office">Office</option>
+    </select>
+    <button onclick="navigate()">Get Directions</button>
+    <script>
+        function navigate() {
+            let start = document.getElementById("current-location").value;
+            let end = document.getElementById("destination").value;
+            window.location.href = `map.html?start=${start}&end=${end}`;
+        }
+    </script>
+</body>
+</html>
+
+<!-- Second Page (map.html) -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Navigation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #map-container {
+            position: relative;
+            display: inline-block;
+        }
+        #map {
+            width: 600px;
+            height: auto;
+        }
+        #routeCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <h2>Navigation Directions</h2>
+    <div id="map-container">
+        <img id="map" src="Campus Navigation.png" alt="College Map">
+        <canvas id="routeCanvas"></canvas>
+    </div>
+    <br>
+    <button onclick="goBack()">Back</button>
+    <script>
+        const locationCoordinates = {
+            entrance: { x: 500, y: 250 },
+            classroom: { x: 400, y: 100 },
+            canteen: { x: 200, y: 300 },
+            playground: { x: 100, y: 100 },
+            office: { x: 400, y: 300 }
+        };
+
+        function getQueryParams() {
+            let params = new URLSearchParams(window.location.search);
+            return { start: params.get("start"), end: params.get("end") };
+        }
+
+        function drawPath(start, end) {
+            let canvas = document.getElementById("routeCanvas");
+            let ctx = canvas.getContext("2d");
+            canvas.width = document.getElementById("map").clientWidth;
+            canvas.height = document.getElementById("map").clientHeight;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let startPoint = locationCoordinates[start];
+            let endPoint = locationCoordinates[end];
+            if (startPoint && endPoint) {
+                ctx.beginPath();
+                ctx.moveTo(startPoint.x, startPoint.y);
+                ctx.lineTo(endPoint.x, endPoint.y);
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        let params = getQueryParams();
+        if (params.start && params.end) {
+            drawPath(params.start, params.end);
+        }
+    </script>
+</body>
+</html>
