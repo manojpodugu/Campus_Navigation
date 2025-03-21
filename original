@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Navigation System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #map-container {
+            position: relative;
+            display: inline-block;
+        }
+        #map {
+            width: 600px;
+            height: auto;
+        }
+        #routeCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        select, button {
+            margin: 10px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>College Navigation System</h2>
+    <div id="map-container">
+        <img id="map" src="Campus Navigation.png" alt="College Map">
+        <canvas id="routeCanvas"></canvas>
+    </div>
+    <br>
+    <label>Current Location:</label>
+    <select id="current-location">
+        <option value="entrance">Entrance & Exit</option>
+        <option value="classroom">Classroom</option>
+        <option value="canteen">Canteen</option>
+        <option value="playground">Playground</option>
+        <option value="office">Office</option>
+    </select>
+    <label>Destination:</label>
+    <select id="destination">
+        <option value="entrance">Entrance & Exit</option>
+        <option value="classroom">Classroom</option>
+        <option value="canteen">Canteen</option>
+        <option value="playground">Playground</option>
+        <option value="office">Office</option>
+    </select>
+    <button onclick="findRoute()">Get Directions</button>
+    <div id="route"></div>
+    <script>
+        const locationCoordinates = {
+            entrance: { x: 500, y: 250 },
+            classroom: { x: 400, y: 100 },
+            canteen: { x: 200, y: 300 },
+            playground: { x: 100, y: 100 },
+            office: { x: 400, y: 300 }
+        };
+
+        function findRoute() {
+            let start = document.getElementById("current-location").value;
+            let end = document.getElementById("destination").value;
+            if (start === end) {
+                document.getElementById("route").innerText = "You are already at the destination!";
+                clearCanvas();
+                return;
+            }
+            drawPath(start, end);
+        }
+
+        function drawPath(start, end) {
+            let canvas = document.getElementById("routeCanvas");
+            let ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let startPoint = locationCoordinates[start];
+            let endPoint = locationCoordinates[end];
+            ctx.beginPath();
+            ctx.moveTo(startPoint.x, startPoint.y);
+            ctx.lineTo(endPoint.x, endPoint.y);
+            ctx.strokeStyle = "red";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+        }
+
+        function clearCanvas() {
+            let canvas = document.getElementById("routeCanvas");
+            let ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    </script>
+</body>
+</html>
